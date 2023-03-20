@@ -359,3 +359,6 @@ convert.exe
 # 忽略其他文件
 test.cpp
 test.exe
+
+# 忽略测试中的html输入
+file/out.html
