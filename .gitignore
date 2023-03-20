@@ -355,3 +355,7 @@ convert.exe
 
 # 忽略vscode相关文件
 .vscode/
+
+# 忽略其他文件
+test.cpp
+test.exe
