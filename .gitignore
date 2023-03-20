@@ -348,3 +348,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# 忽略编译出来的文件
+main.exe
+convert.exe
+
+# 忽略vscode相关文件
+.vscode/
