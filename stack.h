@@ -14,6 +14,7 @@ public:
     Node *top;
     Stack();
     void showStack();
+    void showAllStack();
     bool pushStack(std::string node_s);
     bool popStack();
     
@@ -43,6 +44,18 @@ Stack::Stack(){
 
 void Stack::showStack(){
     std::cout<<top->s<<std::endl;
+}
+
+void Stack::showAllStack(){
+    // 把整个栈打印出来
+    Node* temp = top;
+    std::string str = "";
+    while(temp->ps_front != NULL){
+        str = temp->s + "<=" + str;
+        temp = temp->ps_front;
+    }
+
+    std::cout<<str<<std::endl;
 }
 
 // 入栈操作
