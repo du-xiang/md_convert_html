@@ -48,6 +48,7 @@ void Stack::showStack(){
 
 void Stack::showAllStack(){
     // 把整个栈打印出来
+    // eg. null <= s1 <= s2 <= s3
     Node* temp = top;
     std::string str = "";
     while(temp->ps_front != NULL){
@@ -58,8 +59,8 @@ void Stack::showAllStack(){
     std::cout<<str<<std::endl;
 }
 
-// 入栈操作
 bool Stack::pushStack(std::string node_s){
+    // 入栈操作
     Node *temp = new Node;
     temp->s = node_s;
     temp->ps_front = top;
@@ -67,8 +68,8 @@ bool Stack::pushStack(std::string node_s){
     return true;
 }
 
-// 出栈操作
 bool Stack::popStack(){
+    // 出栈操作
     if(top->ps_front != NULL){
         Node *temp = top;
         top->s=top->ps_front->s;
