@@ -1,5 +1,7 @@
 #include<iostream>
 
+#ifndef STACK_H
+#define STACK_H
 class Node{
 public:
     std::string s;
@@ -81,3 +83,5 @@ bool Stack::popStack(){
     }
     return true;
 }
+
+#endif
