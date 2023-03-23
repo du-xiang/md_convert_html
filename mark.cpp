@@ -111,3 +111,50 @@ std::string mark_inline(std::string s)
 
     return s_re;
 }
+
+std::string mark_block(std::string block){
+    int i = 0;          // 表示当前字符位置
+    int s = 0, c = 0;   // 分别表示上一个非空格字符位置/目前统计的符号数
+                        // s, c变量主要用在换行符标记检测
+    std::string s_re="", temp="";
+
+    std::cout<<block<<std::endl;
+
+    while (i < block.length())
+    {
+        while (block[i] == '*' || block[i] == '-' || block[i] == ' ')
+        {   //  检测换行符标记
+            if (block[i] == ' ')
+            { // 忽略空格
+                i += 1;
+                continue;
+            }
+
+            c += 1; // 当前字符非空格
+
+            if (i != 0 && s != 0)
+            { //换行符应为同一的'*'或'-'
+                if (block[i] != block[s])
+                {
+                    temp += block[i];
+                    break;
+                }
+            }
+            else
+            {
+                i+=1;
+            }
+            if(s==0)
+                s = i;    // 把s置为当前位置
+            else
+                s = i-1;
+        }
+        std::cout<<i<<","<<s<<","<<c<<std::endl;
+        if(i==block.length())
+            return "<br>";
+        else return temp;
+
+    }
+
+    return temp;
+}
