@@ -362,3 +362,7 @@ test.exe
 
 # 忽略测试中的html输入
 file/out.html
+
+
+# 忽略过程记录文件
+record.md
