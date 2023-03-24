@@ -119,41 +119,64 @@ std::string mark_block(std::string block){
     std::string s_re="", temp="";
 
     std::cout<<block<<std::endl;
+    
 
     while (i < block.length())
     {
+        while(block[i]=='#'){
+            // 检测标题标记
+
+        }
+
+
+        while(block[i] == '>'){
+            // 检测引用标记
+        }
+
+
         while (block[i] == '*' || block[i] == '-' || block[i] == ' ')
         {   //  检测换行符标记
             if (block[i] == ' ')
             { // 忽略空格
+                temp += ' ';
                 i += 1;
                 continue;
             }
 
             c += 1; // 当前字符非空格
 
-            if (i != 0 && s != 0)
-            { //换行符应为同一的'*'或'-'
+            if (c > 1){
+                //换行符应为同一的'*'或'-'
                 if (block[i] != block[s])
                 {
                     temp += block[i];
                     break;
+                }else{
+                    temp += block[i];
+                    s = i;  // s标记当前字符位置
+                    i += 1; // 进入下一字符
                 }
+            }else{
+                s = i;  // s标记当前字符位置
+                i += 1; // 进入下一字符
             }
-            else
-            {
-                i+=1;
-            }
-            if(s==0)
-                s = i;    // 把s置为当前位置
-            else
-                s = i-1;
         }
-        std::cout<<i<<","<<s<<","<<c<<std::endl;
+
+        
+        // 如果这一行全为 '*' 或 '-' ，则为换行标记
+        // 否则需要将其判定为文本格式化标记
+        // 除非i=0,否则块元素判定到此结束
         if(i==block.length())
             return "<br>";
-        else return temp;
-
+        else if(c == 2){
+            return "斜体";
+        }else if(c == 3){
+            return "加粗";
+        }else if(c == 4){
+            return "斜体并加粗";
+        }else if(c > 5)
+            return "前方视为正常文本处理";
+        
     }
 
     return temp;
