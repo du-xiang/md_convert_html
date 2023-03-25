@@ -6,19 +6,19 @@
 
 std::string get_filename_md()
 {
-	// ÊäÈëĞèÒª´¦ÀíµÄÎÄ¼ş
+	// è¾“å…¥éœ€è¦å¤„ç†çš„æ–‡ä»¶
 	std::string s_file_md;
 
-	std::cout << "# ÊäÈë.mdÎÄ¼şÃû\n# ·Çµ±Ç°Ä¿Â¼ÏÂÔòĞèÒª´øÂ·¾¶\nÎÄ¼şÃû£º";
+	std::cout << "# è¾“å…¥.mdæ–‡ä»¶å\n# éå½“å‰ç›®å½•ä¸‹åˆ™éœ€è¦å¸¦è·¯å¾„\næ–‡ä»¶åï¼š";
 	while (std::cin >> s_file_md)
 	{
-		// È¡ÊäÈëµÄÎÄ¼şÃûºó×º½øĞĞ±È½Ï
+		// å–è¾“å…¥çš„æ–‡ä»¶ååç¼€è¿›è¡Œæ¯”è¾ƒ
 		std::string temp = s_file_md.substr(s_file_md.length() - 3, s_file_md.length());
 		if (temp != ".md")
 		{
 			system("clear");
-			std::cout << "ÎÄ¼şÀàĞÍ´íÎó(Ó¦ÒÔ.md½áÎ²)" << std::endl;
-			std::cout << "# ÊäÈë.mdÎÄ¼şÃû\n# ·Çµ±Ç°Ä¿Â¼ÏÂÔòĞèÒª´øÂ·¾¶\nÎÄ¼şÃû£º";
+			std::cout << "æ–‡ä»¶ç±»å‹é”™è¯¯(åº”ä»¥.mdç»“å°¾)" << std::endl;
+			std::cout << "# è¾“å…¥.mdæ–‡ä»¶å\n# éå½“å‰ç›®å½•ä¸‹åˆ™éœ€è¦å¸¦è·¯å¾„\næ–‡ä»¶åï¼š";
 		}
 		else
 			break;
@@ -30,19 +30,19 @@ std::string get_filename_md()
 
 std::string get_filename_html()
 {
-	// ÊäÈëĞèÒª´¦ÀíµÄÎÄ¼ş
+	// è¾“å…¥éœ€è¦å¤„ç†çš„æ–‡ä»¶
 	std::string s_file_html;
 
-	std::cout << "# ÊäÈë.htmlÎÄ¼şÃû\nÎÄ¼şÃû£º";
+	std::cout << "# è¾“å…¥.htmlæ–‡ä»¶å\næ–‡ä»¶åï¼š";
 	while (std::cin >> s_file_html)
 	{
-		// È¡ÊäÈëµÄÎÄ¼şÃûºó×º½øĞĞ±È½Ï
+		// å–è¾“å…¥çš„æ–‡ä»¶ååç¼€è¿›è¡Œæ¯”è¾ƒ
 		std::string temp = s_file_html.substr(s_file_html.length() - 5, s_file_html.length());
 		if (temp != ".html")
 		{
 			system("clear");
-			std::cout << "ÎÄ¼şÀàĞÍ´íÎó(Ó¦ÒÔ.html½áÎ²)" << std::endl;
-			std::cout << "# ÊäÈë.htmlÎÄ¼şÃû\nÎÄ¼şÃû£º";
+			std::cout << "æ–‡ä»¶ç±»å‹é”™è¯¯(åº”ä»¥.htmlç»“å°¾)" << std::endl;
+			std::cout << "# è¾“å…¥.htmlæ–‡ä»¶å\næ–‡ä»¶åï¼š";
 		}
 		else
 			break;
@@ -56,22 +56,22 @@ int main(int argc, char *argv[])
 {
 	std::string s_file_md, s_file_html, s_line;
 
-	// »ñÈ¡ÎÄ¼şÃû
+	// è·å–æ–‡ä»¶å
 	s_file_md = get_filename_md();
 	s_file_html = get_filename_html();
 
-	// ´ò¿ªÎÄ¼ş
+	// æ‰“å¼€æ–‡ä»¶
 	std::ifstream file_md(s_file_md);
 	std::ofstream file_html(s_file_html);
 
 	while (getline(file_md, s_line))
 	{
 
-		// ĞŞ¸ÄºóµÄĞĞÎÄ±¾ÊäÈëµ½htmlÎÄ¼şÖĞ
+		// ä¿®æ”¹åçš„è¡Œæ–‡æœ¬è¾“å…¥åˆ°htmlæ–‡ä»¶ä¸­
 		file_html << s_line + '\n';
 	}
 
-	// ¹Ø±Õ´ò¿ªµÄÎÄ¼ş
+	// å…³é—­æ‰“å¼€çš„æ–‡ä»¶
 	file_md.close();
 	file_html.close();
 
