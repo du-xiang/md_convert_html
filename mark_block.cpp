@@ -2,19 +2,16 @@
 
 #include"stack.h"
 
-std::string mark_block(std::string block)
-{
+std::string mark_block_h(std::string str_h){
     int i = 0;        // 表示当前字符位置
     int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
                       // s变量主要用在换行符标记检测
-    std::string s_re = "", temp = "";
+    std::string re_str = "";
 
-    std::cout << block << std::endl;
-
-    while (i < block.length() && block[i] == '#'){
+    while (i < str_h.length() && str_h[i] == '#'){
         // 检测标题标记
         c += 1;
-        temp += block[i];
+        re_str += str_h[i];
         i += 1;
     }
 
@@ -34,11 +31,19 @@ std::string mark_block(std::string block)
         }else
             return "无此标题格式";
     }
+}
 
-    while (i < block.length() && block[i] == '>'){
+
+std::string mark_block_quote(std::string str_q){
+    int i = 0;        // 表示当前字符位置
+    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
+                      // s变量主要用在换行符标记检测
+    std::string re_str = "";
+
+    while (i < str_q.length() && str_q[i] == '>'){
         // 检测引用标记
         c += 1;
-        temp += block[i];
+        re_str += str_q[i];
         i += 1;
     }
 
@@ -54,12 +59,20 @@ std::string mark_block(std::string block)
         }else
             return "引用格式错误";
     }
+}
 
-    while (i < block.length() && (block[i] == '*' || block[i] == '-' || block[i] == ' '))
+
+std::string mark_block_wrap(std::string str_w){
+    int i = 0;        // 表示当前字符位置
+    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
+                      // s变量主要用在换行符标记检测
+    std::string re_str = "";
+
+    while (i < str_w.length() && (str_w[i] == '*' || str_w[i] == '_' || str_w[i] == ' '))
     { //  检测换行符标记
-        if (block[i] == ' ')
+        if (str_w[i] == ' ')
         { // 忽略空格
-            temp += ' ';
+            re_str += ' ';
             i += 1;
             continue;
         }
@@ -67,17 +80,17 @@ std::string mark_block(std::string block)
         c += 1; // 当前字符非空格
 
         if (c > 1){
-            // 换行符应为同一的'*'或'-'
-            if (block[i] != block[s]){
-                temp += block[i];
+            // 换行符应为同一的'*'或'_'
+            if (str_w[i] != str_w[s]){
+                re_str += str_w[i];
                 break;
             }else{
-                temp += block[i];
+                re_str += str_w[i];
                 s = i;  // s标记当前字符位置
                 i += 1; // 进入下一字符
             }
         }else{
-            temp += block[i];
+            re_str += str_w[i];
             s = i;  // s标记当前字符位置
             i += 1; // 进入下一字符
         }
@@ -87,17 +100,38 @@ std::string mark_block(std::string block)
     // 如果这一行全为 '*' 或 '-' ，则为换行标记
     // 否则需要将其判定为文本格式化标记
     // 除非i=0,否则块元素判定到此结束
-    if (i == block.length())
+    if (i == str_w.length() && str_w.length() != 0)
         return "<br>";
-    else if (c == 2){
+    else if (str_w.length() == 0)
+        return str_w;
+    else if (c == 1){
         return "斜体";
     }
-    else if (c == 3){
+    else if (c == 2){
         return "加粗";
     }
-    else if (c == 4){
+    else if (c == 3){
         return "斜体并加粗";
     }
     else
         return "前方视为正常文本处理";
+}
+
+
+std::string mark_block(std::string block)
+{
+    int i = 0;        // 表示当前字符位置
+    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
+                      // s变量主要用在换行符标记检测
+    std::string s_re = "", temp = "";
+
+
+    if(block[i] == '#')
+        return mark_block_h(block);
+    else if(block[i] == '>')
+        return mark_block_quote(block);
+    else if(block[i] == '*' || block[i] == '_' || block[i] == ' ')
+        return mark_block_wrap(block);
+    else return block;
+
 }
