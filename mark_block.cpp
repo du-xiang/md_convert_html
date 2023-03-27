@@ -132,6 +132,10 @@ std::string mark_block(std::string block)
         return mark_block_quote(block);
     else if(block[i] == '*' || block[i] == '_' || block[i] == ' ')
         return mark_block_wrap(block);
+    else if(block[i] >= '1' && block[i] <= '9')
+        return "有序标题!!!";
+    else if(block[i] == '*' || block[i] == '+' || block[i] == '-')
+        return "无序标题!!!";
     else return block;
 
 }
