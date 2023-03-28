@@ -14,22 +14,21 @@ std::string mark_block_h(std::string str_h){
         i += 1;
     }
 
-    // 只有i=0(即首字符非'#')时继续
-    // 否则继续向后检测
-    if(i != 0){
-        if(c == 1){
-            return "<h1>";
-        }else if(c == 2){
-            return "<h2>";
-        }else if(c == 3){
-            return "<h3>";
-        }else if(c == 4){
-            return "<h4>";
-        }else if(c == 5){
-            return "<h5>";
-        }else
-            return "无此标题格式";
-    }
+    std::string str_text = str_h.substr(i+1, str_h.length()-i);
+    // 判定标题格式
+    if(c == 1){
+        return "<h1>"+str_text+"</h1>";
+    }else if(c == 2){
+        return "<h2>"+str_text+"</h2>";
+    }else if(c == 3){
+        return "<h3>"+str_text+"</h3>";
+    }else if(c == 4){
+        return "<h4>"+str_text+"</h4>";
+    }else if(c == 5){
+        return "<h5>"+str_text+"</h5>";
+    }else
+        return str_h;
+    
 }
 
 
