@@ -1,5 +1,7 @@
 #include<iostream>
 
+#include "mark_block_multi_line.cpp"
+
 
 std::string mark_block_h(std::string str_h){
     int i = 0;        // 表示当前字符位置
@@ -59,17 +61,7 @@ std::string mark_block_quote(std::string str_q){
 }
 
 
-std::string mark_block_order_list(std::string str_ol){
-
-}
-
-
-std::string mark_block_unordered_list(std::string str_uol){
-
-}
-
-
-std::string mark_block_wrap_or_unordered_list(std::string str_w){
+std::string mark_block_wrap(std::string str_w){
     int i = 0;        // 表示当前字符位置
     int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
                       // s变量主要用在换行符标记检测
@@ -125,19 +117,52 @@ std::string mark_block_wrap_or_unordered_list(std::string str_w){
 }
 
 
+std::string mark_block_wrap_or_unordered_list(std::string str_w){
+    // 判断是换行标记还是无序列表标记
+    int i = 0;  // 字符位置标志
+    int s = 0;  // 统计前面连续的空格个数
+
+    // 前面连续空格字符个数统计
+    while(i < str_w.length() && str_w[i] == ' '){
+        s += 1;
+        i += 1;
+    }
+
+    // 去除前方标记
+    std::string str_text = str_w.substr(i, str_w.length()-i);
+
+    // 且第一个出现的非空格字符不为'*'或'-'，则判定为非块标记
+    if(str_w[i] != '*' || str_w[i] != '-'){
+        return str_w;
+    }else if(str_w[i+1] != ' ' || s%2 != 0){
+        // 第一个'*'或'-'后无空格，或前面连续的空格非偶数
+        // 则直接进行换行符标记判定
+        return mark_block_wrap(str_text);
+    }else{
+        // 前面标记符合无序列表的特征
+        // 若此行不符合换行符标记
+        // 则直接判定成无序列表
+        if(mark_block_wrap(str_text) != "<br>"){
+            // 非换行标记
+            return "<li>"+str_text+"</li>";
+        }else return "<br>";
+    }
+}
+
+
 std::string mark_block(std::string block)
 {
-    int i = 0;        // 表示当前字符位置
-
-    if(block[i] == '#')
+    // 对首字符进行判断
+    // 是否符合块标记首字符
+    if(block[0] == '#')
         return mark_block_h(block);
-    else if(block[i] == '>')
+    else if(block[0] == '>')
         return mark_block_quote(block);
-    else if(block[i] >= '1' && block[i] <= '9')
+    else if(block[0] >= '1' && block[0] <= '9')
         return mark_block_order_list(block);
-    else if(block[i] == '+')
+    else if(block[0] == '+')
         return mark_block_unordered_list(block);
-    else if(block[i] == '*' || block[i] == '-' || block[i] == ' ')
+    else if(block[0] == '*' || block[0] == '-' || block[0] == ' ')
         return mark_block_wrap_or_unordered_list(block);
     else return block;
 
