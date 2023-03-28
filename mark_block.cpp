@@ -36,29 +36,26 @@ std::string mark_block_h(std::string str_h){
 
 std::string mark_block_quote(std::string str_q){
     int i = 0;        // 表示当前字符位置
-    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
-                      // s变量主要用在换行符标记检测
-    std::string re_str = "";
+    int c = 0;        // 分别表示上一个非空格字符位置/目前统计的符号数
 
     while (i < str_q.length() && str_q[i] == '>'){
         // 检测引用标记
         c += 1;
-        re_str += str_q[i];
         i += 1;
     }
 
-    // 只有i=0(即上面字符未检测出)时退出
-    // 否则继续向下检测
-    if(i != 0){
-        if(c == 1){
-            return "引用1";
-        }else if(c == 2){
-            return "引用2";
-        }else if(c == 3){
-            return "引用3";
-        }else
-            return "引用格式错误";
-    }
+    // 去除字符串块标记
+    std::string str_text = str_q.substr(i, str_q.length()-i);
+
+    // 判定引用层级
+    if(c == 1){
+        return "<div class=\"quote_1\">"+str_text+"</div>";
+    }else if(c == 2){
+        return "<div class=\"quote_2\">"+str_text+"</div>";
+    }else if(c == 3){
+        return "<div class=\"quote_3\">"+str_text+"</div>";
+    }else
+        return str_q;
 }
 
 
