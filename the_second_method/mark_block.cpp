@@ -67,7 +67,7 @@ std::string mark_block_wrap(std::string str_w){
                       // s变量主要用在换行符标记检测
     std::string re_str = "";
 
-    while (i < str_w.length() && (str_w[i] == '*' || str_w[i] == '_' || str_w[i] == ' '))
+    while (i < str_w.length() && (str_w[i] == '*' || str_w[i] == '-' || str_w[i] == ' '))
     { //  检测换行符标记
         if (str_w[i] == ' ')
         { // 忽略空格
@@ -96,24 +96,10 @@ std::string mark_block_wrap(std::string str_w){
     }
 
 
-    // 如果这一行全为 '*' 或 '-' ，则为换行标记
-    // 否则需要将其判定为文本格式化标记
-    // 除非i=0,否则块元素判定到此结束
+    // 换行标记判定
     if (i == str_w.length() && str_w.length() != 0)
         return "<br>";
-    else if (str_w.length() == 0)
-        return str_w;
-    else if (c == 1){
-        return "斜体";
-    }
-    else if (c == 2){
-        return "加粗";
-    }
-    else if (c == 3){
-        return "斜体并加粗";
-    }
-    else
-        return "前方视为正常文本处理";
+    else return str_w;
 }
 
 
@@ -128,16 +114,18 @@ std::string mark_block_wrap_or_unordered_list(std::string str_w){
         i += 1;
     }
 
-    // 去除前方标记
-    std::string str_text = str_w.substr(i, str_w.length()-i);
+    // 去除标记
+    // 为无序列表做准备
+    std::string str_sub = str_w.substr(i, str_w.length()-i);
+    std::string str_text = str_w.substr(i+2, str_w.length()-i);
 
     // 且第一个出现的非空格字符不为'*'或'-'，则判定为非块标记
-    if(str_w[i] != '*' || str_w[i] != '-'){
+    if(str_w[i] != '*' && str_w[i] != '-' && str_w[i] != '+'){
         return str_w;
     }else if(str_w[i+1] != ' ' || s%2 != 0){
         // 第一个'*'或'-'后无空格，或前面连续的空格非偶数
         // 则直接进行换行符标记判定
-        return mark_block_wrap(str_text);
+        return mark_block_wrap(str_sub);
     }else{
         // 前面标记符合无序列表的特征
         // 若此行不符合换行符标记
