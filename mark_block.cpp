@@ -3,8 +3,7 @@
 
 std::string mark_block_h(std::string str_h){
     int i = 0;        // 表示当前字符位置
-    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
-                      // s变量主要用在换行符标记检测
+    int c = 0;        // 分别表示上一个非空格字符位置/目前统计的符号数
     std::string re_str = "";
 
     while (i < str_h.length() && str_h[i] == '#'){
@@ -14,20 +13,25 @@ std::string mark_block_h(std::string str_h){
         i += 1;
     }
 
-    std::string str_text = str_h.substr(i+1, str_h.length()-i);
-    // 判定标题格式
-    if(c == 1){
-        return "<h1>"+str_text+"</h1>";
-    }else if(c == 2){
-        return "<h2>"+str_text+"</h2>";
-    }else if(c == 3){
-        return "<h3>"+str_text+"</h3>";
-    }else if(c == 4){
-        return "<h4>"+str_text+"</h4>";
-    }else if(c == 5){
-        return "<h5>"+str_text+"</h5>";
-    }else
-        return str_h;
+    // 标题标记最后字符应该为空格
+    if(str_h[i] == ' '){
+        i += 1;
+        std::string str_text = str_h.substr(i, str_h.length()-i);
+        
+        // 判定标题格式
+        if(c == 1){
+            return "<h1>"+str_text+"</h1>";
+        }else if(c == 2){
+            return "<h2>"+str_text+"</h2>";
+        }else if(c == 3){
+            return "<h3>"+str_text+"</h3>";
+        }else if(c == 4){
+            return "<h4>"+str_text+"</h4>";
+        }else if(c == 5){
+            return "<h5>"+str_text+"</h5>";
+        }else
+            return str_h;
+    }
     
 }
 
