@@ -1,6 +1,5 @@
 #include<iostream>
 
-#include"stack.h"
 
 std::string mark_block_h(std::string str_h){
     int i = 0;        // 表示当前字符位置
@@ -62,7 +61,17 @@ std::string mark_block_quote(std::string str_q){
 }
 
 
-std::string mark_block_wrap(std::string str_w){
+std::string mark_block_order_list(std::string str_ol){
+
+}
+
+
+std::string mark_block_unordered_list(std::string str_uol){
+
+}
+
+
+std::string mark_block_wrap_or_unordered_list(std::string str_w){
     int i = 0;        // 表示当前字符位置
     int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
                       // s变量主要用在换行符标记检测
@@ -121,21 +130,17 @@ std::string mark_block_wrap(std::string str_w){
 std::string mark_block(std::string block)
 {
     int i = 0;        // 表示当前字符位置
-    int s = 0, c = 0; // 分别表示上一个非空格字符位置/目前统计的符号数
-                      // s变量主要用在换行符标记检测
-    std::string s_re = "", temp = "";
-
 
     if(block[i] == '#')
         return mark_block_h(block);
     else if(block[i] == '>')
         return mark_block_quote(block);
-    else if(block[i] == '*' || block[i] == '_' || block[i] == ' ')
-        return mark_block_wrap(block);
     else if(block[i] >= '1' && block[i] <= '9')
-        return "有序标题!!!";
-    else if(block[i] == '*' || block[i] == '+' || block[i] == '-')
-        return "无序标题!!!";
+        return mark_block_order_list(block);
+    else if(block[i] == '+')
+        return mark_block_unordered_list(block);
+    else if(block[i] == '*' || block[i] == '-' || block[i] == ' ')
+        return mark_block_wrap_or_unordered_list(block);
     else return block;
 
 }
