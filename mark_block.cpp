@@ -4,12 +4,10 @@
 std::string mark_block_h(std::string str_h){
     int i = 0;        // 表示当前字符位置
     int c = 0;        // 分别表示上一个非空格字符位置/目前统计的符号数
-    std::string re_str = "";
 
     while (i < str_h.length() && str_h[i] == '#'){
         // 检测标题标记
         c += 1;
-        re_str += str_h[i];
         i += 1;
     }
 
@@ -17,7 +15,7 @@ std::string mark_block_h(std::string str_h){
     if(str_h[i] == ' '){
         i += 1;
         std::string str_text = str_h.substr(i, str_h.length()-i);
-        
+
         // 判定标题格式
         if(c == 1){
             return "<h1>"+str_text+"</h1>";
