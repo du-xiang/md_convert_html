@@ -45,7 +45,22 @@ typedef struct Node{
 // markdown 解析器类
 class markdownParser{
 public:
-
+    // 将 markdown 文本解析为语法树
+    Node parser(const std::string &markdown){
+        std::vector<Token> tokens = tokenize(markdown);     // 将文本解析为 Token
+        Node root(NodeType::ROOT);                          // 创建语法树根节点
+        parseTokens(tokens, root);                          // 将 Token 转换为语法树
+        return root;
+    }
 
 private:
+    //  将 markdown 文本分解为Token
+    std::vector<Token> tokenize(const std::string &markdown){
+
+    }
+
+    //  将一系列 Token 转换为语法树
+    void parseTokens(const std::vector<Token> &tokens, Node &parent){
+
+    }
 };
