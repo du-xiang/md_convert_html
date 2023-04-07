@@ -51,14 +51,14 @@ std::string getHtmlFilename()
 
 
 int main(){
-    Node           parserTree(NodeType::ROOT);  //  markdown 语法树
-    markdownParser mdParser;                    //  获取解析器类
-    std::string    mdFilename,htmlFilename;     //  输入与输出文件名
+    Node           parserTree(NodeType::ROOT);  				//  markdown 语法树
+    markdownParser mdParser;                    				//  获取解析器类
+    std::string    mdFilename,htmlFilename;     				//  输入与输出文件名
 
-    mdFilename   = getMdFilename();             //  获取 markdown 文件名
-    htmlFilename = getHtmlFilename();           //  获取 html 文件名
+    mdFilename   = getMdFilename();             				//  获取 markdown 文件名
+    htmlFilename = getHtmlFilename();           				//  获取 html 文件名
 
-    parserTree   = mdParser.parser(mdFilename); //  获取语法树
+    parserTree   = mdParser.parser(mdFilename, htmlFilename); 	//  获取语法树
 
     return 0;
 }
