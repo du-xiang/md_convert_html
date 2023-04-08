@@ -46,10 +46,12 @@ typedef struct Node{
 class markdownParser{
 public:
     // 将 markdown 文本解析为语法树
-    Node parser(const std::string &mdName);
+    Node parser(const std::string &mdName, const std::string &htmlName);
 
 
 private:
+    bool isMultiLine = false;   // 是否处于多行标记检测
+
     // ************************************************
     //  getTokens()、syntaxTree() 用于实现 parser()
     // ************************************************
@@ -65,7 +67,27 @@ private:
     // 用于实现 getTokens() 
     // ********************
 
-    // 检测块标记
+    // 检测标题标记
+    Token markTitle(const std::string &line);
 
+    // 检测引用标记
+    Token markQuote(const std::string &line);
+
+    // 检测行内标记
+    Token markInline(const std::string &line);
+
+
+    // ********************
+    // 用于实现 syntaxTree()
+    // ********************
     
 };
+
+
+// 将 markdown 文本解析为语法树
+Node markdownParser::parser(const std::string &mdName, const std::string &htmlName){
+    std::vector<Token> tokens = getTokens(mdName);       // 将文本解析为 Token
+    Node root(NodeType::ROOT);                           // 创建语法树根节点
+    syntaxTree(tokens, root);                            // 将 Token 转换为语法树
+    return root;
+}
