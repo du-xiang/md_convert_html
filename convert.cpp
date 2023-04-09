@@ -58,7 +58,7 @@ int main(){
     mdFilename   = getMdFilename();             				//  获取 markdown 文件名
     htmlFilename = getHtmlFilename();           				//  获取 html 文件名
 
-    parserTree   = mdParser.parser(mdFilename, htmlFilename); 	//  获取语法树
+    parserTree   = mdParser.parser(mdFilename); 				//  获取语法树
 
     return 0;
 }
