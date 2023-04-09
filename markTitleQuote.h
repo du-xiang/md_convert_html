@@ -58,5 +58,38 @@ Token markdownParser::markTitle(const std::string &line){
 
 // 引用标记
 Token markdownParser::markQuote(const std::string &line){
-	Token tokenQuote(TokenType::QUOTE);
+    Token tokenQuote(TokenType::QUOTE);			//	引用 Token
+	Token tokenText(TokenType::TEXT);			//	文本 Token
+	int pos = 0;								//	当前字符位置
+	int count =0;								//	统计 '>' 个数
+	bool isQuote = true;						//	判断 Token 是否为 quote
+
+    while(pos < line.length() && line[pos] == '>'){
+		pos   += 1;
+		count += 1;
+	}
+
+    if(line[pos] == ' '){
+		switch(count){
+			case 1:
+				tokenQuote.level = 1;
+				break;
+			case 2:
+				tokenQuote.level = 2;
+				break;
+			case 3:
+				tokenQuote.level = 3;
+				break;
+			default:
+				isQuote = false;
+		}
+	}
+
+    if(isQuote && pos+1 < line.length()){
+		markInline(line.substr(pos+1));
+	}else if(isQuote && pos+1 >= line.length()){
+		return tokenQuote;
+	}else{
+		return tokenText;
+	}
 }
