@@ -16,21 +16,22 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 	{
 		if(lineText == "$$"){
 			//	数学公式
-			isMath = !isMath;
-			if(markMath.content != ""){
+			if(parserState == ParserStates::ParserStateMath){
 				tokens.push_back(markMath);
 				markMath.content = "";					//	清空 Math Token 内容
-			}
+			}else parserState = ParserStates::ParserStateMath;
+
 		}else if(lineText.substr(0,3) == "```"){
 			//	代码块
-			isCode = !isCode;
-			if(markCode.content != ""){
+			if(parserState == ParserStates::ParserStateCode){
 				tokens.push_back(markCode);
 				markCode.content = "";					//	清空 Code Token 内容
 			}
+			
 		}
 
-		if(!isCode && !isMath){								//	判断是否处于多行解析状态
+		switch(parserState){
+		case ParserStates::ParserStateOthers:			//	判断是否处于多行解析状态
 			if(lineText[0] == '#'){
 				tokens.push_back(markTitle(lineText));
 			}else if(lineText[0] == '>'){
@@ -42,10 +43,15 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 			}else if(lineText[0] == '*' || lineText[0] == '-' || lineText[0] == ' '){
 
 			}else ;
-		}else if(isCode){
+			break;
+		case ParserStates::ParserStateCode:
 			markCode.content += lineText;
-		}else if(isMath){
+			break;
+		case ParserStates::ParserStateMath:
 			markMath.content += lineText;
+			break;
+		default:
+			std::cout<<"解析器状态错误！"<<std::endl;
 		}
 	}
 

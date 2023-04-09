@@ -7,7 +7,9 @@ enum class TokenType{
     TEXT,   //  文本Token
     TITLE,  //  标题Token
     WRAP,   //  换行符Token
-    QUOTE   //  引用Token
+    QUOTE,  //  引用Token
+    CODE,   //  代码Token
+    MATH    //  数学公式Token
 };
 
 //  Toke 属性定义
@@ -40,17 +42,28 @@ typedef struct Node{
     Node(NodeType t) : type(t), level(0) {}
 };
 
+//  定义解析器状态
+//  用于区分代码块、数学公式、列表
+enum class ParserStates{
+    ParserStateOthers,          //  解析器状态：除下面几种之外其他
+    ParserStateMath,            //  解析器状态：多行数学公式
+    ParserStateCode,            //  解析器状态：代码块
+    parserStateList             //  解析器状态：列表
+};
 
 
 // markdown 解析器类
 class markdownParser{
 public:
+    //  解析器状态初始化为 parserStateOthers
+    markdownParser():parserState(ParserStates::ParserStateOthers){}
+
     // 将 markdown 文本解析为语法树
-    Node parser(const std::string &mdName, const std::string &htmlName);
+    Node parser(const std::string &mdName);
 
 
 private:
-    bool isMultiLine = false;   // 是否处于多行标记检测
+    ParserStates parserState;   //  解析器状态
 
     // ************************************************
     //  getTokens()、syntaxTree() 用于实现 parser()
@@ -85,7 +98,7 @@ private:
 
 
 // 将 markdown 文本解析为语法树
-Node markdownParser::parser(const std::string &mdName, const std::string &htmlName){
+Node markdownParser::parser(const std::string &mdName){
     std::vector<Token> tokens = getTokens(mdName);       // 将文本解析为 Token
     Node root(NodeType::ROOT);                           // 创建语法树根节点
     syntaxTree(tokens, root);                            // 将 Token 转换为语法树
