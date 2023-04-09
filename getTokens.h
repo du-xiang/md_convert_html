@@ -67,25 +67,45 @@ Token markdownParser::markQuote(const std::string &line){
 std::vector<Token> markdownParser::getTokens(const std::string &mdName){
     std::vector<Token> tokens;                          //  存放解析出的 Token
     std::string lineText;                               //  按行读取文件文本
+	Token markMath(TokenType::MATH);					//	存放数学公式内容Token
+	Token markCode(TokenType::CODE);					//	存放代码内容Token
 
 	std::ifstream mdFile(mdName);                       //	打开文件
 
 	while (getline(mdFile, lineText))                   //	按行读取文件
 	{
-		if(!isMultiLine){								//	判断是否处于多行解析状态
+		if(lineText == "$$"){
+			//	数学公式
+			isMath = !isMath;
+			if(markMath.content != ""){
+				tokens.push_back(markMath);
+				markMath.content = "";					//	清空 Math Token 内容
+			}
+		}else if(lineText.substr(0,3) == "```"){
+			//	代码块
+			isCode = !isCode;
+			if(markCode.content != ""){
+				tokens.push_back(markCode);
+				markCode.content = "";					//	清空 Code Token 内容
+			}
+		}
+
+		if(!isCode && !isMath){								//	判断是否处于多行解析状态
 			if(lineText[0] == '#'){
 				tokens.push_back(markTitle(lineText));
 			}else if(lineText[0] == '>'){
 				tokens.push_back(markTitle(lineText));
-			}else if(lineText[0] >= '0' && lineText[0] <= '9'){
+			}else if(lineText[0] >= '1' && lineText[0] <= '9'){
 
 			}else if(lineText[0] == '+'){
 
 			}else if(lineText[0] == '*' || lineText[0] == '-' || lineText[0] == ' '){
 
 			}else ;
-		}else{
-
+		}else if(isCode){
+			markCode.content += lineText;
+		}else if(isMath){
+			markMath.content += lineText;
 		}
 	}
 
