@@ -5,7 +5,9 @@
 //  Token 类型定义
 enum class TokenType{
     TEXT,   //  文本Token
+    LIST,   //  列表Token
     TITLE,  //  标题Token
+    TABLE,  //  表格Token
     WRAP,   //  换行符Token
     QUOTE,  //  引用Token
     CODE,   //  代码Token
@@ -13,7 +15,7 @@ enum class TokenType{
 };
 
 //  Toke 属性定义
-typedef struct Token{
+struct Token{
     TokenType type;              // Token 类型
     std::string content;         // Token 内容
     int level;                   // 标题级别
@@ -33,7 +35,7 @@ enum class NodeType{
 };
 
 // 语法树属性定义
-typedef struct Node{
+struct Node{
     NodeType type;              // 节点类型
     std::string content;        // 节点内容（仅用于文本节点）
     int level;                  // 标题级别（仅用于标题节点）
@@ -44,11 +46,13 @@ typedef struct Node{
 
 //  定义解析器状态
 //  用于区分代码块、数学公式、列表
-enum class ParserStates{
-    ParserStateOthers,          //  解析器状态：除下面几种之外其他
-    ParserStateMath,            //  解析器状态：多行数学公式
-    ParserStateCode,            //  解析器状态：代码块
-    parserStateList             //  解析器状态：列表
+enum class parserStates{
+    parserStateOthers,          //  解析器状态：除下面几种之外其他
+    parserStateMath,            //  解析器状态：多行数学公式
+    parserStateCode,            //  解析器状态：代码块
+    parserStateList,            //  解析器状态：列表
+    parserStateTable            //  解析器状态：表格
+
 };
 
 
@@ -56,14 +60,14 @@ enum class ParserStates{
 class markdownParser{
 public:
     //  解析器状态初始化为 parserStateOthers
-    markdownParser():parserState(ParserStates::ParserStateOthers){}
+    markdownParser():parserState(parserStates::parserStateOthers){}
 
     // 将 markdown 文本解析为语法树
     Node parser(const std::string &mdName);
 
 
 private:
-    ParserStates parserState;   //  解析器状态
+    parserStates parserState;   //  解析器状态
 
     // ************************************************
     //  getTokens()、syntaxTree() 用于实现 parser()
