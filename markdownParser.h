@@ -4,21 +4,22 @@
 
 //  Token 类型定义
 enum class TokenType{
-    TEXT,   //  文本Token
-    LIST,   //  列表Token
-    TITLE,  //  标题Token
-    TABLE,  //  表格Token
-    WRAP,   //  换行符Token
-    QUOTE,  //  引用Token
-    CODE,   //  代码Token
-    MATH    //  数学公式Token
+    TEXT,           //  文本Token
+    TITLE,          //  标题Token
+    TABLE,          //  表格Token
+    WRAP,           //  换行符Token
+    QUOTE,          //  引用Token
+    CODE,           //  代码Token
+    MATH,           //  数学公式Token
+    ListOrder,      //  有序列表Token
+    ListUnordered   //  无序列表Token
 };
 
 //  Toke 属性定义
 struct Token{
     TokenType type;              // Token 类型
     std::string content;         // Token 内容
-    int level;                   // 标题级别
+    int level;                   // 级别(标题、列表)
     std::vector<Token> children; // 子 Token(仅用于列表和表格)
 
     Token(TokenType t) : type(t), level(0) {}
