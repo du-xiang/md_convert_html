@@ -9,10 +9,13 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
     std::string lineText;                               //  按行读取文件文本
 	int countSpace = 0;									//	空格计数,用于列表层级
 	int pos = 0;										//	字符定位,用于列表判定
+	bool isOut = false;									//	用于列表检测退出标记
+	bool isOrder = false;								//	用于判定是否为有序列表
 	Token markMath(TokenType::MATH);					//	存放数学公式内容Token
 	Token markCode(TokenType::CODE);					//	存放代码内容Token
-	Token markList(TokenType::LIST);					//	存放列表Token
 	Token markTable(TokenType::TABLE);					//	存放表格Token
+	Token markListOrder(TokenType::ListOrder);			//	存放有序列表Token
+	Token markListUnorder(TokenType::ListUnordered);	//	存放无序列表Token
 
 	std::ifstream mdFile(mdName);                       //	打开文件
 
@@ -20,6 +23,8 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 	{
 		pos 		= 0;
 		countSpace 	= 0;
+		isOut		= true;
+
 
 		while(lineText[pos] == ' '){
 			//	统计空格字符个数
@@ -29,10 +34,26 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 
 		if(lineText[pos] > '1' && lineText[pos] < '9'){
 			if(lineText.substr(pos+1, 2) == ". "){
-
+				parserState = parserStates::parserStateList;
+				isOut = false;
+				isOrder = true;
 			}
-		}else if(lineText.substr(pos, 2) == "* "){
-			
+		}else if(lineText.substr(pos, 2) == "* " || lineText.substr(pos, 2) == "- " || lineText.substr(pos, 2) == "+ "){
+			parserState = parserStates::parserStateList;
+			isOut = false;
+			isOrder = false;
+		}
+
+		//	列表结束后一行
+		//	解析器状态依旧为 parserStateList, 且 isOut = true
+		//	此时需要将解析器状态调整为 parserStateOthers
+		//	且需要将列表 Token 压入 vector，并清空列表 Token 内容
+		if(isOut == true && parserState == parserStates::parserStateList){
+			parserState = parserStates::parserStateOthers;
+			tokens.push_back(markListOrder);
+			if(isOrder){
+				tokens.push_back(markListOrder);
+			}
 		}
 
 		if(lineText == "$$"){
@@ -60,13 +81,7 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 				tokens.push_back(markTitle(lineText));
 			}else if(lineText[0] == '>'){
 				tokens.push_back(markTitle(lineText));
-			}else if(lineText[0] >= '1' && lineText[0] <= '9'){
-
-			}else if(lineText[0] == '+'){
-
-			}else if(lineText[0] == '*' || lineText[0] == '-' || lineText[0] == ' '){
-
-			}else ;
+			}
 			break;
 		case parserStates::parserStateCode:
 			markCode.content += lineText;
@@ -75,7 +90,21 @@ std::vector<Token> markdownParser::getTokens(const std::string &mdName){
 			markMath.content += lineText;
 			break;
 		case parserStates::parserStateList:
-
+			if(isOrder){
+				markListOrder.content = lineText.substr(pos);
+				markListOrder.level = (countSpace+1)/2;	//	空格数除以2 (向上取整)
+				tokens.push_back(markListOrder);
+				markListOrder.content = "";
+				markListOrder.level = 0;
+				parserState = parserStates::parserStateOthers;
+			}else{
+				markListUnorder.content = lineText.substr(pos);
+				markListUnorder.level = (countSpace+1)/2;	//	空格数除以2 (向上取整)
+				tokens.push_back(markListUnorder);
+				markListUnorder.content = "";
+				markListUnorder.level = 0;
+				parserState = parserStates::parserStateOthers;
+			}
 			break;
 		case parserStates::parserStateTable:
 
