@@ -62,10 +62,12 @@ ___粗斜体文本___
 
 ```c
 printf("helloworld");
+scanf("%d",&a);
 ```
 
 $$
 /delta + /beta
+/beta + /delta
 $$
 
 | 左对齐 | 右对齐 | 居中对齐 |
