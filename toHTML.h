@@ -1,67 +1,55 @@
-#include "toHTML.h"
+#pragma once
 
-std::string getMdFilename()
-{
-	// 输入需要处理的文件
-	std::string mdFilename;
+#include"syntaxHTML.h"
 
-	std::cout << "# 输入.md文件名\n# 非当前目录下则需要带路径\n文件名：";
-	while (std::cin >> mdFilename)
+// 将 Token 转换为 HTML 字符串
+std::string markdownParser::tokenToString(const Token& token) {
+	std::string reString;							//	用于返回的字符串
+
+	switch (token.type)
 	{
-		// 取输入的文件名后缀进行比较
-		std::string temp = mdFilename.substr(mdFilename.length() - 3, mdFilename.length());
-		if (temp != ".md")
-		{
-			system("clear");
-			std::cout << "文件类型错误(应以.md结尾)" << std::endl;
-			std::cout << "# 输入.md文件名\n# 非当前目录下则需要带路径\n文件名：";
-		}
-		else
-			break;
+	case TokenType::TITLE:
+		reString = htmlTitle(token);
+		break;
+	case TokenType::QUOTE:
+		reString = htmlQuote(token);
+		break;
+	case TokenType::TEXT:
+		reString = token.content;
+		break;
+	case TokenType::CODE:
+		reString = "<code>\n"+token.content+"</code>\n";
+		break;
+	case TokenType::MATH:
+		reString = "<div class=\"math\">\n" + token.content + "</div>\n";
+		break;
+	case TokenType::PARAGRAPH:
+		reString = htmlPara(token);
+		break;
+	case TokenType::LIST:
+		reString = htmlList(token);
+		break;
+	default:
+		break;
 	}
-	system("clear");
 
-	return mdFilename;
+	return reString;
 }
 
-std::string getHtmlFilename()
-{
-	// 输入需要处理的文件
-	std::string htmlFilename;
+//  将一系列 Tokens 转换为 HTML 代码
+void markdownParser::toHTML(const std::vector<Token>& tokens, const std::string& htmlName) {
+	std::string htmlString;
+	std::ofstream htmlFile(htmlName);                       //	打开文件
+	
+	htmlString += head;										//	添加 HTML 头部
 
-	std::cout << "# 输入.html文件名\n文件名：";
-	while (std::cin >> htmlFilename)
-	{
-		// 取输入的文件名后缀进行比较
-		std::string temp = htmlFilename.substr(htmlFilename.length() - 5, htmlFilename.length());
-		if (temp != ".html")
-		{
-			system("clear");
-			std::cout << "文件类型错误(应以.html结尾)" << std::endl;
-			std::cout << "# 输入.html文件名\n文件名：";
-		}
-		else
-			break;
+	for (int i=0; i < tokens.size(); i++) {
+		htmlString += tokenToString(tokens[i]);
 	}
-	system("clear");
 
-	return htmlFilename;
-}
+	htmlString += tail;										//	添加 HTML 尾部
 
+	htmlFile << htmlString;									//	写入 .html 文件
 
-
-int main() {
-	Node           parserTree(NodeType::ROOT);  				//  markdown 语法树
-	markdownParser mdParser;                    				//  获取解析器类
-	std::string    mdFilename, htmlFilename;     				//  输入与输出文件名
-
-	//mdFilename   = getMdFilename();             				//  获取 markdown 文件名
-	//htmlFilename = getHtmlFilename();           				//  获取 html 文件名
-	// test
-	mdFilename = "file/test.md";
-	htmlFilename = "file/out.html";
-
-	parserTree   = mdParser.parser(mdFilename,htmlFilename); 	//  开始转换
-
-	return 0;
+	htmlFile.close();
 }
