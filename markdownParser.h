@@ -1,9 +1,12 @@
+#pragma once
+
 #include<iostream>
 #include<string>
 #include<vector>
+#include<fstream>
 
 //  Token 类型定义
-enum class TokenType{
+enum class TokenType {
     TEXT,           //  文本Token
     TITLE,          //  标题Token
     TABLE,          //  表格Token
@@ -11,22 +14,26 @@ enum class TokenType{
     QUOTE,          //  引用Token
     CODE,           //  代码Token
     MATH,           //  数学公式Token
-    ListOrder,      //  有序列表Token
-    ListUnordered   //  无序列表Token
+    PARAGRAPH,      //  段落Token
+    LIST,           //  列表Token
+    LISTCELL        //  列表元素Token
 };
 
 //  Toke 属性定义
-struct Token{
+struct Token {
     TokenType type;              // Token 类型
     std::string content;         // Token 内容
     int level;                   // 级别(标题、列表)
     std::vector<Token> children; // 子 Token(仅用于列表和表格)
 
     Token(TokenType t) : type(t), level(0) {}
+    Token(TokenType t, std::string s):type(t), content(s), level(0){}
+    Token(TokenType t, int l) :type(t), level(l) {}
+    Token(TokenType t, std::string s, int l) :type(t), content(s), level(l) {}
 };
 
 // 语法树结点类型定义
-enum class NodeType{
+enum class NodeType {
     ROOT, // 根节点
     TEXT, // 文本节点
     HEAD, // 标题节点
@@ -36,7 +43,7 @@ enum class NodeType{
 };
 
 // 语法树属性定义
-struct Node{
+struct Node {
     NodeType type;              // 节点类型
     std::string content;        // 节点内容（仅用于文本节点）
     int level;                  // 标题级别（仅用于标题节点）
@@ -47,7 +54,7 @@ struct Node{
 
 //  定义解析器状态
 //  用于区分代码块、数学公式、列表
-enum class parserStates{
+enum class parserStates {
     parserStateOthers,          //  解析器状态：除下面几种之外其他
     parserStateMath,            //  解析器状态：多行数学公式
     parserStateCode,            //  解析器状态：代码块
@@ -58,13 +65,13 @@ enum class parserStates{
 
 
 // markdown 解析器类
-class markdownParser{
+class markdownParser {
 public:
     //  解析器状态初始化为 parserStateOthers
-    markdownParser():parserState(parserStates::parserStateOthers){}
+    markdownParser() :parserState(parserStates::parserStateOthers) {}
 
     // 将 markdown 文本解析为语法树
-    Node parser(const std::string &mdName);
+    Node parser(const std::string& mdName, const std::string& htmlName);
 
 
 private:
@@ -75,37 +82,55 @@ private:
     // ************************************************
 
     //  将 markdown 文本分解为Token
-    std::vector<Token> getTokens(const std::string &mdName);
+    std::vector<Token> getTokens(const std::string& mdName);
 
-    //  将一系列 Token 转换为语法树
-    void syntaxTree(const std::vector<Token> &tokens, Node &parent);
+    //  将一系列 Token 转换为 HTML 代码
+    void toHTML(const std::vector<Token>& tokens, const std::string &htmlFilename);
 
 
     // ********************
     // 用于实现 getTokens() 
     // ********************
 
-    // 检测标题标记
-    Token markTitle(const std::string &line);
+    //  检测标题标记
+    Token markTitle(const std::string& line);
 
-    // 检测引用标记
-    Token markQuote(const std::string &line);
+    //  检测引用标记
+    Token markQuote(const std::string& line);
 
-    // 检测行内标记
-    Token markInline(const std::string &line);
+    //  检测列表标记
+    Token markList(const std::string& line, const int& countSpace, const bool& isOrder);
+
+    //  检测行内标记
+    std::vector<Token> markInline(const std::string& line);
 
 
     // ********************
-    // 用于实现 syntaxTree()
+    // 用于实现 toHTML()
     // ********************
-    
+
+    //  将 Tokens 转换为 html 字符串
+    std::string tokenToString(const Token& token);
+
+    //  标题 Token
+    std::string htmlTitle(const Token& token);
+
+    //  引用 Token
+    std::string htmlQuote(const Token& token);
+
+    // 段落 Token
+    std::string htmlPara(const Token& token);
+
+    //  列表 Token
+    std::string htmlList(const Token& token);
+
 };
 
 
 // 将 markdown 文本解析为语法树
-Node markdownParser::parser(const std::string &mdName){
+Node markdownParser::parser(const std::string& mdName, const std::string& htmlName) {
     std::vector<Token> tokens = getTokens(mdName);       // 将文本解析为 Token
     Node root(NodeType::ROOT);                           // 创建语法树根节点
-    syntaxTree(tokens, root);                            // 将 Token 转换为语法树
+    toHTML(tokens, htmlName);                            // 将 Token 转换为语法树
     return root;
 }
