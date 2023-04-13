@@ -1,6 +1,6 @@
 #pragma once
 
-#include"headTail.h"
+#include "headTail.h"
 
 std::string markdownParser::htmlTitle(const Token& token) {
 	std::string reTitle;
