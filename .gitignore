@@ -366,3 +366,6 @@ file/out.html
 
 # 忽略过程记录文件
 record.md
+
+# 忽略visual studio 相关文件
+.vs/
