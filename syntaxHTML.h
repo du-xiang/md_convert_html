@@ -1,6 +1,6 @@
 #pragma once
 
-#include "headTail.h"
+#include"headTail.h"
 
 std::string markdownParser::htmlTitle(const Token& token) {
 	std::string reTitle;
@@ -87,10 +87,25 @@ std::string markdownParser::htmlList(const Token& token) {
 	}
 
 	if (token.content == "1") {
-		reList = "<ol>\n<li>\n" + parserContent + "</li>\n</ol>";
+		reList = "<ol>\n" + parserContent + "</ol>";
 	}else {
-		reList = "<ul>\n<li>\n" + parserContent + "</li>\n</ul>";
+		reList = "<ul>\n" + parserContent + "</ul>";
 	}
 
 	return reList;
+}
+
+
+std::string markdownParser::htmlListCell(const Token& token) {
+	std::string reListCell;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reListCell = "<li>" + parserContent + "</li>";
+
+	return reListCell;
 }
