@@ -10,6 +10,7 @@ enum class TokenType {
     TEXT,           //  文本Token
     TITLE,          //  标题Token
     TABLE,          //  表格Token
+    TABLECELL,      //  表格元素Token
     WRAP,           //  换行符Token
     QUOTE,          //  引用Token
     CODE,           //  代码Token
@@ -59,8 +60,8 @@ enum class parserStates {
     parserStateMath,            //  解析器状态：多行数学公式
     parserStateCode,            //  解析器状态：代码块
     parserStateList,            //  解析器状态：列表
-    parserStateTable            //  解析器状态：表格
-
+    parserStateTable,           //  解析器状态：表格
+    parserStateWrap             //  解析器状态：换行符
 };
 
 
@@ -123,6 +124,9 @@ private:
 
     //  列表 Token
     std::string htmlList(const Token& token);
+
+    //  列表元素 Token
+    std::string htmlListCell(const Token& token);
 
 };
 
