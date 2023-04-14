@@ -29,6 +29,12 @@ std::string markdownParser::tokenToString(const Token& token) {
 	case TokenType::LIST:
 		reString = htmlList(token);
 		break;
+	case TokenType::LISTCELL:
+		reString = htmlListCell(token);
+		break;
+	case TokenType::WRAP:
+		reString = "<br>";
+		break;
 	default:
 		break;
 	}
