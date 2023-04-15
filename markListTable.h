@@ -1,6 +1,6 @@
 #pragma once
 
-#include"markdownParser.h"
+#include "markInlineFunc.h"
 
 void markdownParser::markList(std::vector<Token>& tokens, const std::string& line, const int& pos, const int& countSpace, const bool& isOrder) {
 	Token tokenListCell(TokenType::LISTCELL);			//	创建列表 cell token 存放列表信息
@@ -42,5 +42,104 @@ void markdownParser::markList(std::vector<Token>& tokens, const std::string& lin
 
 		tokenTemp.children.push_back(tokenListCell);
 		tokens.push_back(tokenTemp);
+	}
+}
+
+
+//	将表格表头元素解析为 vector
+std::vector<Token> markdownParser::markTableTh(const std::string& line) {
+	std::vector<Token> reTokens;
+	std::string strTemp;
+	int pos = 1;
+
+	while (line.find("|", pos) != std::string::npos) {
+		Token td(TokenType::TH);
+
+		strTemp = line.substr(pos, line.find("|", pos) - pos);
+
+		//	先去除两端空格字符
+		if (!strTemp.empty()) {
+			strTemp.erase(0, strTemp.find_first_not_of(" "));
+			strTemp.erase(strTemp.find_last_not_of(" ") + 1);
+		}
+
+		td.children = markInline(strTemp);
+		reTokens.push_back(td);
+
+		if (line.find("|", pos) < line.length() - 2) {		//	防止溢出
+			pos = line.find("|", pos) + 1;
+		}
+		else
+			break;
+	}
+
+	return reTokens;
+}
+
+
+//	将表格行元素解析为 vector
+std::vector<Token> markdownParser::markTableTd(const std::string& line) {
+	std::vector<Token> reTokens;
+	std::string strTemp;
+	int pos = 1;
+
+	while (line.find("|", pos) != std::string::npos) {
+		Token td(TokenType::TD);
+
+		strTemp = line.substr(pos, line.find("|", pos) - pos);
+
+		//	先去除两端的空格字符
+		if (!strTemp.empty()){
+			strTemp.erase(0, strTemp.find_first_not_of(" "));
+			strTemp.erase(strTemp.find_last_not_of(" ") + 1);
+		}
+		
+		td.children = markInline(strTemp);
+		reTokens.push_back(td);
+
+		if (line.find("|", pos) < line.length() - 2) {		//	防止溢出
+			pos = line.find("|", pos) + 1;
+		}
+		else
+			break;
+	}
+
+	return reTokens;
+}
+
+
+//	表格不能只用表头一行就确定(需要至少两行才可以)
+//	当检测到表头时不能直接解析为表格Token
+//	第一行需要先将其解析为 Paragraph Token 
+//	但是需要在 level 标记为 1，并将string存放在content中
+//	等下一行解析情况符合表格情况时再将 Paragraph Token 替换为表格 token
+//	第二列可能带有每一列元素的对齐格式，格式就保存在表头元素中
+//	
+void markdownParser::markTable(std::vector<Token>& tokens, const std::string& line) {
+	Token tokenTable(TokenType::TABLE);					//	存放表格Token
+
+	if (tokens.size() != 0) {
+		if (tokens.back().type == TokenType::TABLE) {
+			Token tr(TokenType::TR);
+			tr.children = markTableTd(line);
+			tokens.back().children.push_back(tr);
+		} 
+		else if (tokens.back().type == TokenType::PARAGRAPH && tokens.back().level == 1) {
+			Token tokenTable(TokenType::TABLE);
+			Token tokenTr(TokenType::TR);
+			tokenTr.children = markTableTh(tokens.back().content);
+			tokenTable.children.push_back(tokenTr);
+			tokens.back() = tokenTable;
+		}
+		else {
+			Token tokenPara(TokenType::PARAGRAPH, line, 1);
+			tokenPara.children = markInline(line);
+			tokens.push_back(tokenPara);
+		}
+	}
+	else {
+		Token tokenPara(TokenType::PARAGRAPH, line, 1);
+		tokenPara.children = markInline(line);
+		tokens.push_back(tokenPara);
 	}
 }
