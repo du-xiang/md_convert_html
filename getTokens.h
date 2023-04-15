@@ -7,6 +7,7 @@
 std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 	std::vector<Token> tokens{};                        //  存放解析出的 Token
 	std::string lineText;                               //  按行读取文件文本
+	std::string tableAlign;								//	表格对齐格式
 	bool isOrder = false;								//	列表是否为有序列表
 	int pos = 0;										//	字符定位,用于列表判定
 	int countSpace = 0;									//	列表前的空格字符数
@@ -103,7 +104,7 @@ std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 			parserState = parserStates::parserStateOthers;
 			break;
 		case parserStates::parserStateTable:
-			markTable(tokens, lineText);
+			markTable(tokens, lineText, tableAlign);
 			parserState = parserStates::parserStateOthers;
 			break;
 		case parserStates::parserStateWrap:
