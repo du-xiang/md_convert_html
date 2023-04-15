@@ -109,3 +109,62 @@ std::string markdownParser::htmlListCell(const Token& token) {
 
 	return reListCell;
 }
+
+
+std::string markdownParser::htmlTable(const Token& token) {
+	std::string reTable;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reTable = "<table border = \"1\">" + parserContent + "</table>";
+
+	return reTable;
+}
+
+
+std::string markdownParser::htmlTh(const Token& token) {
+	std::string reTh;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+	reTh = "<th>" + parserContent + "</th>";
+
+	return reTh;
+}
+
+
+std::string markdownParser::htmlTr(const Token& token) {
+	std::string reTr;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reTr = "<tr>" + parserContent + "</tr>";
+
+	return reTr;
+}
+
+
+std::string markdownParser::htmlTd(const Token& token) {
+	std::string reTd;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reTd = "<td>" + parserContent + "</td>";
+
+	return reTd;
+}
