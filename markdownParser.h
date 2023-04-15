@@ -114,13 +114,16 @@ private:
     bool isTable(const std::string& line);
 
     //  检测表格标记
-    void markTable(std::vector<Token>& tokens, const std::string& line);
+    void markTable(std::vector<Token>& tokens, const std::string& line, std::string& tableAlign);
+
+    //  表格对齐方式检测
+    std::string tableAlign(const std::string& line);
 
     //  检测表格表头元素标记
     std::vector<Token> markTableTh(const std::string& line);
 
     //  检测表格行元素标记
-    std::vector<Token> markTableTd(const std::string& line);
+    std::vector<Token> markTableTd(const std::string& line, const std::string& tableAlign);
 
     //  检测行内标记
     std::vector<Token> markInline(const std::string& line);
