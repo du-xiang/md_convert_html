@@ -10,7 +10,9 @@ enum class TokenType {
     TEXT,           //  文本Token
     TITLE,          //  标题Token
     TABLE,          //  表格Token
-    TABLECELL,      //  表格元素Token
+    TH,             //  表格表头Token
+    TR,             //  表格行元素
+    TD,             //  表格行元素中的列元素
     WRAP,           //  换行符Token
     QUOTE,          //  引用Token
     CODE,           //  代码Token
@@ -99,8 +101,26 @@ private:
     //  检测引用标记
     Token markQuote(const std::string& line);
 
+    //  判断是否为列表标记
+    bool isList(const std::string& line, const int& pos, bool& isOrder);
+
     //  检测列表标记
     void markList(std::vector<Token>& tokens, const std::string& line, const int& pos, const int& countSpace, const bool& isOrder);
+
+    //  判断是否为换行符标记
+    bool isWrap(const std::string& line, const int& pos);
+
+    //  判断是否为表格标记
+    bool isTable(const std::string& line);
+
+    //  检测表格标记
+    void markTable(std::vector<Token>& tokens, const std::string& line);
+
+    //  检测表格表头元素标记
+    std::vector<Token> markTableTh(const std::string& line);
+
+    //  检测表格行元素标记
+    std::vector<Token> markTableTd(const std::string& line);
 
     //  检测行内标记
     std::vector<Token> markInline(const std::string& line);
@@ -119,7 +139,7 @@ private:
     //  引用 Token
     std::string htmlQuote(const Token& token);
 
-    // 段落 Token
+    //  段落 Token
     std::string htmlPara(const Token& token);
 
     //  列表 Token
@@ -127,6 +147,18 @@ private:
 
     //  列表元素 Token
     std::string htmlListCell(const Token& token);
+
+    //  表格 Token
+    std::string htmlTable(const Token& token);
+
+    //  表格表头 Token
+    std::string htmlTh(const Token& token);
+
+    //  表格行元素 Token
+    std::string htmlTr(const Token& token);
+
+    // 表格行元素中的列元素 Token
+    std::string htmlTd(const Token& token);
 
 };
 
