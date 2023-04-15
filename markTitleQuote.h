@@ -3,17 +3,6 @@
 #include "markListTable.h"
 
 
-// 行内标记
-std::vector<Token> markdownParser::markInline(const std::string& line) {
-	std::vector<Token> tokens;
-	Token tokenText(TokenType::TEXT);
-	tokenText.content = line;
-
-	tokens.push_back(tokenText);
-
-	return tokens;
-}
-
 //	标题标记
 Token markdownParser::markTitle(const std::string& line) {
 	Token tokenTitle(TokenType::TITLE);			//	标题 Token
