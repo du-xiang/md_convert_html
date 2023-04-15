@@ -35,6 +35,18 @@ std::string markdownParser::tokenToString(const Token& token) {
 	case TokenType::WRAP:
 		reString = "<br>";
 		break;
+	case TokenType::TABLE:
+		reString = htmlTable(token);
+		break;
+	case TokenType::TH:
+		reString = htmlTh(token);
+		break;
+	case TokenType::TR:
+		reString = htmlTr(token);
+		break;
+	case TokenType::TD:
+		reString = htmlTd(token);
+		break;
 	default:
 		break;
 	}
