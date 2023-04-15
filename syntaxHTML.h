@@ -164,7 +164,14 @@ std::string markdownParser::htmlTd(const Token& token) {
 		parserContent += tokenToString(token.children[i]);
 	}
 
-	reTd = "<td>" + parserContent + "</td>";
+	if (token.content == "0")
+		reTd = "<td align=\"left\">" + parserContent + "</td>";
+	else if (token.content == "1")
+		reTd = "<td align=\"center\">" + parserContent + "</td>";
+	else if (token.content == "2")
+		reTd = "<td align=\"right\">" + parserContent + "</td>";
+	else
+		reTd = "<td>" + parserContent + "</td>";
 
 	return reTd;
 }
