@@ -46,6 +46,48 @@ void markdownParser::markList(std::vector<Token>& tokens, const std::string& lin
 }
 
 
+//	解析表格对齐格式
+//	返回字符串 reAlign
+//	字符串字符全为 '0'、'1'、'2'
+//	'0'：左对齐、'1'：居中对齐、'2'：右对齐
+std::string markdownParser::tableAlign(const std::string& line) {
+	std::string reAlign;
+	std::string reTemp = line;
+	int pos = 0;
+	int posSpace = 0;
+
+	//	清除全部空格
+	if (!reTemp.empty()){
+		while ((posSpace = reTemp.find(' ', posSpace)) != std::string::npos){
+			reTemp.erase(posSpace, 1);
+		}
+	}
+
+	while (reTemp.find("|", pos+1) != std::string::npos) {
+		if (reTemp[pos + 1] == ':') {
+			if (reTemp[reTemp.find("|", pos + 1) - 1] == ':')
+				reAlign += '1';
+			else
+				reAlign += '0';
+		}
+		else {
+			if (reTemp[reTemp.find("|", pos + 1) - 1] == ':')
+				reAlign += '2';
+			else
+				reAlign += '0';
+		}
+
+		if (reTemp.find("|", pos+1) < reTemp.length() - 1) {		//	防止溢出
+			pos = reTemp.find("|", pos+1);
+		}
+		else
+			break;
+	}
+	
+	return reAlign;
+}
+
+
 //	将表格表头元素解析为 vector
 std::vector<Token> markdownParser::markTableTh(const std::string& line) {
 	std::vector<Token> reTokens;
@@ -78,13 +120,19 @@ std::vector<Token> markdownParser::markTableTh(const std::string& line) {
 
 
 //	将表格行元素解析为 vector
-std::vector<Token> markdownParser::markTableTd(const std::string& line) {
+std::vector<Token> markdownParser::markTableTd(const std::string& line, const std::string& tableAlign) {
 	std::vector<Token> reTokens;
 	std::string strTemp;
 	int pos = 1;
+	int posAlign = 0;
+
 
 	while (line.find("|", pos) != std::string::npos) {
 		Token td(TokenType::TD);
+
+		// 判定列元素的对齐格式
+		td.content = tableAlign[posAlign];
+		posAlign += 1;
 
 		strTemp = line.substr(pos, line.find("|", pos) - pos);
 
@@ -115,19 +163,19 @@ std::vector<Token> markdownParser::markTableTd(const std::string& line) {
 //	等下一行解析情况符合表格情况时再将 Paragraph Token 替换为表格 token
 //	第二列可能带有每一列元素的对齐格式，格式就保存在表头元素中
 //	
-void markdownParser::markTable(std::vector<Token>& tokens, const std::string& line) {
-	Token tokenTable(TokenType::TABLE);					//	存放表格Token
-
+void markdownParser::markTable(std::vector<Token>& tokens, const std::string& line, std::string& strAlign) {
 	if (tokens.size() != 0) {
 		if (tokens.back().type == TokenType::TABLE) {
 			Token tr(TokenType::TR);
-			tr.children = markTableTd(line);
+			tr.children = markTableTd(line, strAlign);
 			tokens.back().children.push_back(tr);
-		} 
+		}
 		else if (tokens.back().type == TokenType::PARAGRAPH && tokens.back().level == 1) {
 			Token tokenTable(TokenType::TABLE);
 			Token tokenTr(TokenType::TR);
 			tokenTr.children = markTableTh(tokens.back().content);
+			strAlign = tableAlign(line);
+
 			tokenTable.children.push_back(tokenTr);
 			tokens.back() = tokenTable;
 		}
