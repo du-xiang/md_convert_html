@@ -100,7 +100,7 @@ private:
     Token markQuote(const std::string& line);
 
     //  检测列表标记
-    Token markList(const std::string& line, const int& countSpace, const bool& isOrder);
+    void markList(std::vector<Token>& tokens, const std::string& line, const int& pos, const int& countSpace, const bool& isOrder);
 
     //  检测行内标记
     std::vector<Token> markInline(const std::string& line);
