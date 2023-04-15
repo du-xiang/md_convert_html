@@ -74,6 +74,7 @@ std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 				tokens.push_back(markMath);
 				markMath.content = "";					//	清空 Math Token 内容
 				parserState = parserStates::parserStateOthers;
+				continue;
 			}
 			else {
 				parserState = parserStates::parserStateMath;
@@ -87,6 +88,7 @@ std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 				tokens.push_back(markCode);
 				markCode.content = "";					//	清空 Code Token 内容
 				parserState = parserStates::parserStateOthers;
+				continue;
 			}
 			else {
 				parserState = parserStates::parserStateCode;
@@ -130,11 +132,8 @@ std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 				}
 
 				if (lastTokenPtr->type != TokenType::LIST) {
-					Token tokenTemp(TokenType::LIST, countSpace);
-					if (isOrder)
-						tokenTemp.content = "1";
-					else
-						tokenTemp.content = "0";
+					Token tokenTemp(TokenType::LIST, isOrder ? "1" : "0", countSpace);
+
 					tokenTemp.children.push_back(tokenListCell);
 					tokensPtr->push_back(tokenTemp);
 				}
@@ -144,22 +143,15 @@ std::vector<Token> markdownParser::getTokens(const std::string& mdName) {
 						tokensPtr->back().children.push_back(tokenListCell);
 					}
 					else {
-						Token tokenTemp(TokenType::LIST, countSpace);
-						if (isOrder)
-							tokenTemp.content = "1";
-						else
-							tokenTemp.content = "0";
+						Token tokenTemp(TokenType::LIST, isOrder?"1":"0", countSpace);
+						
 						tokenTemp.children.push_back(tokenListCell);
 						tokensPtr->push_back(tokenTemp);
 					}
 				}
 			}
 			else {
-				Token tokenTemp(TokenType::LIST, countSpace);
-				if (isOrder)
-					tokenTemp.content = "1";
-				else
-					tokenTemp.content = "0";
+				Token tokenTemp(TokenType::LIST, isOrder ? "1" : "0", countSpace);
 
 				tokenTemp.children.push_back(tokenListCell);
 				tokens.push_back(tokenTemp);
