@@ -47,6 +47,24 @@ std::string markdownParser::tokenToString(const Token& token) {
 	case TokenType::TD:
 		reString = htmlTd(token);
 		break;
+	case TokenType::BOLD:
+		reString = htmlBold(token);
+		break;
+	case TokenType::ITALIC:
+		reString = htmlItalic(token);
+		break;
+	case TokenType::DELET:
+		reString = htmlDelete(token);
+		break;
+	case TokenType::IMAGE:
+		reString = "<img src=\"" + token.content + "\">";
+		break;
+	case TokenType::LINK:
+		reString = htmlLink(token);
+		break;
+	case TokenType::FOOTNOTE:
+		reString = htmlFootnote(token);
+		break;
 	default:
 		break;
 	}
