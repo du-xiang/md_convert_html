@@ -51,7 +51,6 @@ std::string getHtmlFilename()
 
 
 int main() {
-	Node           parserTree(NodeType::ROOT);  				//  markdown 语法树
 	markdownParser mdParser;                    				//  获取解析器类
 	std::string    mdFilename, htmlFilename;     				//  输入与输出文件名
 
@@ -61,7 +60,7 @@ int main() {
 	mdFilename = "file/test.md";
 	htmlFilename = "file/out.html";
 
-	parserTree   = mdParser.parser(mdFilename,htmlFilename); 	//  开始转换
+	mdParser.parser(mdFilename,htmlFilename); 					//  开始转换
 
 	return 0;
 }
