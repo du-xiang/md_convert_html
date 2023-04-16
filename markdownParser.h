@@ -7,6 +7,12 @@
 
 //  Token 类型定义
 enum class TokenType {
+    BOLD,           //  文本加粗Token
+    ITALIC,         //  文本斜体Token
+    DELET,          //  文本删除线Token
+    FOOTNOTE,       //  脚注Token
+    LINK,           //  超链接Token
+    IMAGE,          //  图片Token
     TEXT,           //  文本Token
     TITLE,          //  标题Token
     TABLE,          //  表格Token
@@ -35,25 +41,6 @@ struct Token {
     Token(TokenType t, std::string s, int l) :type(t), content(s), level(l) {}
 };
 
-// 语法树结点类型定义
-enum class NodeType {
-    ROOT, // 根节点
-    TEXT, // 文本节点
-    HEAD, // 标题节点
-    PARA, // 段落节点
-    LIST, // 列表节点
-    TABLE // 表格节点
-};
-
-// 语法树属性定义
-struct Node {
-    NodeType type;              // 节点类型
-    std::string content;        // 节点内容（仅用于文本节点）
-    int level;                  // 标题级别（仅用于标题节点）
-    std::vector<Node> children; // 子节点
-
-    Node(NodeType t) : type(t), level(0) {}
-};
 
 //  定义解析器状态
 //  用于区分代码块、数学公式、列表
@@ -74,11 +61,11 @@ public:
     markdownParser() :parserState(parserStates::parserStateOthers) {}
 
     // 将 markdown 文本解析为语法树
-    Node parser(const std::string& mdName, const std::string& htmlName);
+    void parser(const std::string& mdName, const std::string& htmlName);
 
 
 private:
-    parserStates parserState;   //  解析器状态
+    parserStates parserState;                           //  解析器状态
 
     // ************************************************
     //  getTokens()、syntaxTree() 用于实现 parser()
@@ -163,13 +150,37 @@ private:
     // 表格行元素中的列元素 Token
     std::string htmlTd(const Token& token);
 
+    //  文本加粗 Token
+    std::string htmlBold(const Token& token);
+
+    //  文本斜体 Token
+    std::string htmlItalic(const Token& token);
+
+    //  文本删除线 Token
+    std::string htmlDelete(const Token& token);
+
+    //  链接 Token
+    std::string htmlLink(const Token& token);
+
+    //  脚注 Token
+    std::string htmlFootnote(const Token& token);
+
+
+    //  ************************
+    //  用于实现 markInline()  
+    //  ************************
+
+    //  实现行内标签选择
+    TokenType inlineMarkSwitch(const std::string& line, const int& pos);
+
+    //  行内标签：文本
+    std::string inlineMarkText(const std::string& line, int& pos);
+
 };
 
 
 // 将 markdown 文本解析为语法树
-Node markdownParser::parser(const std::string& mdName, const std::string& htmlName) {
+void markdownParser::parser(const std::string& mdName, const std::string& htmlName) {
     std::vector<Token> tokens = getTokens(mdName);       // 将文本解析为 Token
-    Node root(NodeType::ROOT);                           // 创建语法树根节点
     toHTML(tokens, htmlName);                            // 将 Token 转换为语法树
-    return root;
 }
