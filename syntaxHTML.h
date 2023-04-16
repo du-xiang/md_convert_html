@@ -175,3 +175,78 @@ std::string markdownParser::htmlTd(const Token& token) {
 
 	return reTd;
 }
+
+
+std::string markdownParser::htmlBold(const Token& token) {
+	std::string reBold;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reBold = "<b>" + parserContent + "</b>";
+
+	return reBold;
+}
+
+
+std::string markdownParser::htmlItalic(const Token& token) {
+	std::string reItalic;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reItalic = "<i>" + parserContent + "</i>";
+
+	return reItalic;
+}
+
+
+std::string markdownParser::htmlDelete(const Token& token) {
+	std::string reDelete;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reDelete = "<del>" + parserContent + "</del>";
+
+	return reDelete;
+}
+
+
+std::string markdownParser::htmlLink(const Token& token) {
+	std::string reDelete;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reDelete = "<a herf=\"" + token.content + "\">" + parserContent + "</a>";
+
+	return reDelete;
+}
+
+
+std::string markdownParser::htmlFootnote(const Token& token) {
+	std::string reFootnote;
+	std::string parserContent;						//	存放子 Tokens 解析的内容
+
+
+	for (int i = 0; i < token.children.size(); i++) {
+		parserContent += tokenToString(token.children[i]);
+	}
+
+	reFootnote = "<div class = \"footnote\">" + parserContent + "</div>";
+
+	return reFootnote;
+}
